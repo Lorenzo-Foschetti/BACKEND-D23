@@ -1,5 +1,7 @@
 package lorenzofoschetti.u5d10.services;
 
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import lorenzofoschetti.u5d10.entities.Dipendente;
 import lorenzofoschetti.u5d10.exceptions.BadRequestException;
 import lorenzofoschetti.u5d10.exceptions.NotFoundException;
@@ -10,10 +12,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.UUID;
 
+@Service
 public class DipendenteService {
+
+    @Autowired
+    private Cloudinary cloudinaryUploader;
 
     @Autowired
     private DipendenteRepository dipendenteRepository;
@@ -62,5 +71,15 @@ public class DipendenteService {
     public void findByIdAndDelete(UUID dipendenteId) {
         Dipendente found = this.findById(dipendenteId);
         dipendenteRepository.delete(found);
+    }
+
+    public String uploadImage(MultipartFile file) throws IOException {
+        return (String) cloudinaryUploader.uploader().upload(file.getBytes(), ObjectUtils.emptyMap()).get("url");
+    }
+
+    public Dipendente saveImageUrl(String url, UUID dipendenteId) {
+        Dipendente found = findById(dipendenteId);
+        found.setAvatar(url);
+        return dipendenteRepository.save(found);
     }
 }
