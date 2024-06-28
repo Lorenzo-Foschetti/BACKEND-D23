@@ -1,5 +1,6 @@
 package lorenzofoschetti.u5d10.services;
 
+import lorenzofoschetti.u5d10.entities.Dipendente;
 import lorenzofoschetti.u5d10.entities.Dispositivo;
 import lorenzofoschetti.u5d10.exceptions.NotFoundException;
 import lorenzofoschetti.u5d10.payloads.NewDispositivoPayload;
@@ -38,5 +39,26 @@ public class DispositivoService {
         if (size > 20) size = 20;
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy));
         return dispositivoRepository.findAll(pageable);
+    }
+
+    public Dispositivo findByIdAndUpdate(UUID id, NewDispositivoPayload body) {
+        Dispositivo found = this.findDispositivoById(id);
+        found.setType(body.type());
+        found.setState(body.state());
+        return dispositivoRepository.save(found);
+
+    }
+
+
+    public void findByIdAndDelete(UUID id) {
+        dispositivoRepository.delete(this.findDispositivoById(id));
+    }
+
+
+    public Dispositivo assegnazioneDispositivo(UUID dispositivoId, UUID dipendenteId) {
+        Dispositivo foundDispositivo = this.findDispositivoById(dispositivoId);
+        Dipendente foundDipendente = dipendenteService.findById(dipendenteId);
+        foundDispositivo.setDipendente(foundDipendente);
+        return dispositivoRepository.save(foundDispositivo);
     }
 }

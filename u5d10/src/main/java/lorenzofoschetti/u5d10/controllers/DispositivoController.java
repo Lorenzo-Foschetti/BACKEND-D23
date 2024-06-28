@@ -43,4 +43,20 @@ public class DispositivoController {
     public Dispositivo findById(@PathVariable UUID dispositivoId) {
         return dispositivoService.findDispositivoById(dispositivoId);
     }
+
+    @PutMapping("/{dispositivoId}")
+    public Dispositivo findByIdAndUpdate(@PathVariable UUID dispositivoId, @RequestBody NewDispositivoPayload dispositivoModificato) {
+        return dispositivoService.findByIdAndUpdate(dispositivoId, dispositivoModificato);
+    }
+
+    @DeleteMapping("/{dispositivoId}")
+    public void findByIdAndDelete(@PathVariable UUID dipendenteId) {
+        dispositivoService.findByIdAndDelete(dipendenteId);
+
+    }
+
+    @PatchMapping("/{dispositivoId}/{dipendenteId}")
+    public Dispositivo assegnazioneDispositivo(@PathVariable UUID dispositivoId, @PathVariable UUID dipendenteId) {
+        return dispositivoService.assegnazioneDispositivo(dispositivoId, dipendenteId);
+    }
 }
