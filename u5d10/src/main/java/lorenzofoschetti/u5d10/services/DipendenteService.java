@@ -2,6 +2,7 @@ package lorenzofoschetti.u5d10.services;
 
 import lorenzofoschetti.u5d10.entities.Dipendente;
 import lorenzofoschetti.u5d10.exceptions.BadRequestException;
+import lorenzofoschetti.u5d10.exceptions.NotFoundException;
 import lorenzofoschetti.u5d10.payloads.NewDipendentePayload;
 import lorenzofoschetti.u5d10.repositories.DipendenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+
+import java.util.UUID;
 
 public class DipendenteService {
 
@@ -37,5 +40,27 @@ public class DipendenteService {
 
 
         return dipendenteRepository.save(newDipendente);
+    }
+
+
+    public Dipendente findById(UUID id) {
+        return dipendenteRepository.findById(id).orElseThrow(() -> new NotFoundException(id));
+    }
+
+    public Dipendente findByIdAndUpdate(UUID id, Dipendente dipendenteModificato) {
+        Dipendente found = findById(id);
+        found.setEmail(dipendenteModificato.getEmail());
+        found.setName(dipendenteModificato.getName());
+        found.setEmail(dipendenteModificato.getEmail());
+        found.setSurname(dipendenteModificato.getSurname());
+        found.setAvatar(dipendenteModificato.getAvatar());
+
+
+        return dipendenteRepository.save(found);
+    }
+
+    public void findByIdAndDelete(UUID dipendenteId) {
+        Dipendente found = this.findById(dipendenteId);
+        dipendenteRepository.delete(found);
     }
 }
