@@ -1,4 +1,46 @@
 package lorenzofoschetti.u5d10.controllers;
 
+
+import lorenzofoschetti.u5d10.entities.Dispositivo;
+import lorenzofoschetti.u5d10.exceptions.BadRequestException;
+import lorenzofoschetti.u5d10.payloads.NewDispositivoPayload;
+import lorenzofoschetti.u5d10.services.DispositivoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/dispositivi")
 public class DispositivoController {
+
+    @Autowired
+    private DispositivoService dispositivoService;
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+
+    private Dispositivo saveDispositivo(@RequestBody @Validated NewDispositivoPayload body, BindingResult validationResult) {
+
+        if (validationResult.hasErrors()) {
+
+            throw new BadRequestException(validationResult.getAllErrors());
+        }
+        return dispositivoService.save(body);
+    }
+
+    @GetMapping
+    private Page<Dispositivo> getAllDispositivi(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "5") int size, @RequestParam(defaultValue = "id") String sortBy) {
+        return this.dispositivoService.getDispositiviList(page, size, sortBy);
+    }
+
+
+    @GetMapping("/{dispositivoId}")
+    public Dispositivo findById(@PathVariable UUID dispositivoId) {
+        return dispositivoService.findDispositivoById(dispositivoId);
+    }
 }
