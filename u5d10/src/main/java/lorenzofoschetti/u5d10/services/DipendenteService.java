@@ -60,7 +60,7 @@ public class DipendenteService {
         Dipendente found = findById(id);
         found.setEmail(dipendenteModificato.getEmail());
         found.setName(dipendenteModificato.getName());
-        found.setEmail(dipendenteModificato.getEmail());
+        found.setUsername(dipendenteModificato.getUsername());
         found.setSurname(dipendenteModificato.getSurname());
         found.setAvatar(dipendenteModificato.getAvatar());
 
